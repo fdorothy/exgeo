@@ -14,7 +14,7 @@ defmodule ExOpen311.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :maru, :httpoison]]
+    [applications: [:logger, :maru, :couchex]]
   end
 
   # Dependencies can be Hex packages:
@@ -29,8 +29,8 @@ defmodule ExOpen311.Mixfile do
   defp deps do
     [
       {:maru, "~> 0.11"},
-      {:httpoison, "~> 0.11.1"},
-      {:xml_builder, "~> 0.1.1"}
+      {:xml_builder, "~> 0.1.1"},
+      {:couchex, "~> 0.8.1"}
     ]
   end
 end
