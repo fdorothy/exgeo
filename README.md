@@ -1,24 +1,13 @@
 # ExOpen311
 
-**TODO: Add description**
+**NOTE THAT THIS IS A WORK IN PROGRESS AND NOT FUNCTIONAL**
+
+This is an elixir implementation of open311 (http://open311.org).
+
+This project uses couchdb.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+git clone https://github.com/fdorothy/exopen311.git exopen311
 
-  1. Add `ex_open311` to your list of dependencies in `mix.exs`:
-
-    ```elixir
-    def deps do
-      [{:ex_open311, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `ex_open311` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:ex_open311]]
-    end
-    ```
-
+More instructions to come on setting up the couchdb.
