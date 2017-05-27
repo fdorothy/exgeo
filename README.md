@@ -8,6 +8,6 @@ This project uses couchdb.
 
 ## Installation
 
-git clone https://github.com/fdorothy/exopen311.git exopen311
+git clone https://github.com/fdorothy/ex_open311.git ex_open311
 
 More instructions to come on setting up the couchdb.
