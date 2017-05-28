@@ -132,12 +132,12 @@ defmodule ExGeo.Server do
   def find_service_requests(params) do
     case params[:service_request_id] do
       nil ->
-        selectors = []
+        selector = []
 
         # build selectors for time range
         start_date = params[:start_date]
         end_date = params[:end_date]
-        date_selectors =
+        selector = selector ++
           cond do
             start_date != nil and end_date != nil ->
               [{"$and", [%{"requested_datetime": %{"$gte": start_date}},
@@ -152,22 +152,24 @@ defmodule ExGeo.Server do
 
         # build selector for the service code
         service_code = params[:service_code]
-        service_code_selector = if service_code != nil do
-          [{"service_code", %{"$in": String.split(service_code, [" ", ","], trim: true)}}]
-        else
-          []
-        end
+        selector = selector ++
+          if service_code != nil do
+            [{"service_code", %{"$in": String.split(service_code, [" ", ","], trim: true)}}]
+          else
+            []
+          end
 
         # build selector for the status
         status = params[:status]
-        status_selector = if status != nil do
-          [{"status", %{"$in": String.split(status, [" ", ","], trim: true)}}]
-        else
-          []
-        end
+        selector = selector ++
+          if status != nil do
+            [{"status", %{"$in": String.split(status, [" ", ","], trim: true)}}]
+          else
+            []
+          end
 
-        selectors = Enum.into(selectors ++ date_selectors ++ service_code_selector ++ status_selector, %{})
-        Couchex.find(service_requests(), %{"selector" => selectors})
+        selector = Enum.into(selector, %{})
+        Couchex.find(service_requests(), %{"selector" => selector})
       id ->
         [Couchex.open_doc(service_requests(), %{id: id})]
     end
