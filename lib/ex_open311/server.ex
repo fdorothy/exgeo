@@ -8,8 +8,18 @@ defmodule ExOpen311.Server do
     db
   end
   
+  def service_requests() do
+    {:ok, db} = Couchex.open_db(server(), "open311_service_requests")
+    db
+  end
+  
   def get_services do
     {:ok, result} = Couchex.fetch_view(services(), {"services", "data"}, [])
+    map_response(result)
+  end
+
+  def create_service_request(data) do
+    {:ok, result} = Couchex.save_doc(service_requests(), data)
     map_response(result)
   end
 
