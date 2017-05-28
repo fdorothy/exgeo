@@ -58,11 +58,11 @@ defmodule ExOpen311.API do
     else
       result = ExOpen311.Server.create_service_request(params)
       data = [
-	%{
-	  service_request_id: result["_id"],
-	  service_notice: "",
-	  account_id: params[:account_id]
-	}
+	      %{
+	        service_request_id: result["_id"],
+	        service_notice: "",
+	        account_id: params[:account_id]
+	      }
       ]
       json(conn, data)
     end
@@ -99,11 +99,11 @@ defmodule ExOpen311.API do
     else
       result = ExOpen311.Server.create_service_request(params)
       data = [
-	%{
-	  service_request_id: result["_id"],
-	  service_notice: "",
-	  account_id: params[:account_id]
-	}
+	      %{
+	        service_request_id: result["_id"],
+	        service_notice: "",
+	        account_id: params[:account_id]
+	      }
       ]
       result = ExOpen311.Xml.service_requests_to_xml(data)
       xml(conn, result)

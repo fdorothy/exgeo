@@ -30,7 +30,8 @@ defmodule ExOpen311.Mixfile do
     [
       {:maru, "~> 0.11"},
       {:xml_builder, "~> 0.1.1"},
-      {:couchex, "~> 0.8.1"}
+      {:couchex, "~> 0.8.1"},
+      {:exml, "~> 0.1.1"},
     ]
   end
 end
