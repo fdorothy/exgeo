@@ -13,8 +13,8 @@ defmodule ExOpen311.Server do
     # views: services.data
     services_data_view = """
     function (doc) {
-      if (doc.service_code) {
-        emit(doc.code, doc);
+      if (doc.data.service_code) {
+        emit(doc.code, doc.data);
       }
     }
     """
@@ -65,7 +65,9 @@ defmodule ExOpen311.Server do
   
   def create_service(data) when is_map(data) do
     defaults = Couchex.open_doc(services(), %{id: "default"})["data"]
-    {:ok, result} = Couchex.save_doc(services(), Map.merge(defaults, data))
+    new_data = Map.merge(defaults, data["data"])
+    data = %{data | "data" => new_data}
+    {:ok, result} = Couchex.save_doc(services(), data)
     map_response(result)
   end
 
@@ -73,10 +75,12 @@ defmodule ExOpen311.Server do
     create_service(
       %{
         "_id" => code,
-        "service_code" => code,
-        "service_name" => name,
-        "description" => description,
-        "group" => group
+        "data" => %{
+          "service_code" => code,
+          "service_name" => name,
+          "description" => description,
+          "group" => group
+        }
     })
   end
 
