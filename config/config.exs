@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :ex_open311, key: :value
+#     config :exgeo, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:ex_open311, :key)
+#     Application.get_env(:exgeo, :key)
 #
 # Or configure a 3rd-party app:
 #
@@ -27,7 +27,7 @@ use Mix.Config
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-config :maru, ExOpen311.API,
+config :maru, ExGeo.API,
       http: [port: 8880]
 
 import_config "#{Mix.env}.exs"

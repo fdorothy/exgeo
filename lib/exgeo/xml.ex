@@ -1,4 +1,4 @@
-defmodule ExOpen311.Xml do
+defmodule ExGeo.Xml do
   import XmlBuilder
 
   def services_to_xml(services) do

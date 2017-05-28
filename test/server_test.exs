@@ -1,6 +1,6 @@
-defmodule ExOpen311.ServerTest do
+defmodule ExGeo.ServerTest do
   use ExUnit.Case, async: false
-  alias ExOpen311.Server
+  alias ExGeo.Server
 
   @lat_long_service_request %{
     jurisdiction_id: "city.gov",
@@ -25,7 +25,7 @@ defmodule ExOpen311.ServerTest do
   }
 
   setup do
-    ExOpen311.Server.recreate
+    ExGeo.Server.recreate
     :ok
   end
 
@@ -122,41 +122,41 @@ defmodule ExOpen311.ServerTest do
     r3 = Server.create_service_request(request)
 
     # get by service request id
-    [result] = ExOpen311.Server.find_service_requests(service_request_id: r1["_id"])
+    [result] = ExGeo.Server.find_service_requests(service_request_id: r1["_id"])
     assert result["_id"] == r1["_id"]
-    [result] = ExOpen311.Server.find_service_requests(service_request_id: r3["_id"])
+    [result] = ExGeo.Server.find_service_requests(service_request_id: r3["_id"])
     assert result["_id"] == r3["_id"]
 
     # find by service code(s)
-    [result] = ExOpen311.Server.find_service_requests(service_code: "001").docs
+    [result] = ExGeo.Server.find_service_requests(service_code: "001").docs
     assert result["_id"] == r1["_id"]
-    [result] = ExOpen311.Server.find_service_requests(service_code: "002").docs
+    [result] = ExGeo.Server.find_service_requests(service_code: "002").docs
     assert result["_id"] == r2["_id"]
-    [sr1, sr2] = ExOpen311.Server.find_service_requests(service_code: "002, 001").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(service_code: "002, 001").docs
     ids = [sr1["_id"], sr2["_id"]]
     assert r1["_id"] in ids
     assert r2["_id"] in ids
 
     # find by status
-    [sr1, sr2] = ExOpen311.Server.find_service_requests(status: "open, wip").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(status: "open, wip").docs
     ids = [sr1["_id"], sr2["_id"]]
     assert r1["_id"] in ids
     assert r3["_id"] in ids
 
     # find after start time
-    [sr1] = ExOpen311.Server.find_service_requests(start_date: "2017-02-01T00:00:00Z").docs
+    [sr1] = ExGeo.Server.find_service_requests(start_date: "2017-02-01T00:00:00Z").docs
     assert sr1["_id"] == r2["_id"]
-    [sr1, sr2] = ExOpen311.Server.find_service_requests(start_date: "2017-01-01T00:00:00Z").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(start_date: "2017-01-01T00:00:00Z").docs
     ids = [sr1["_id"], sr2["_id"]]
     assert r2["_id"] in ids
     assert r1["_id"] in ids
 
     # find before end time
-    [sr1] = ExOpen311.Server.find_service_requests(end_date: "2017-01-01T00:00:00Z").docs
+    [sr1] = ExGeo.Server.find_service_requests(end_date: "2017-01-01T00:00:00Z").docs
     assert sr1["_id"] == r3["_id"]
 
     # find in time range
-    [sr1] = ExOpen311.Server.find_service_requests(%{
+    [sr1] = ExGeo.Server.find_service_requests(%{
       start_date: "2017-01-01T00:00:00Z",
       end_date: "2017-01-30T00:00:00Z"
     }).docs

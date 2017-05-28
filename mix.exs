@@ -1,8 +1,8 @@
-defmodule ExOpen311.Mixfile do
+defmodule ExGeo.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :ex_open311,
+    [app: :exgeo,
      version: "0.1.0",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,

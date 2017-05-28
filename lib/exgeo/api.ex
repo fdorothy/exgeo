@@ -1,4 +1,4 @@
-defmodule ExOpen311.API do
+defmodule ExGeo.API do
   use Maru.Router
 
   plug Plug.Parsers,
@@ -14,13 +14,13 @@ defmodule ExOpen311.API do
 
   get "services.xml" do
     process_get_services(conn, fn result ->
-      result = ExOpen311.Xml.services_to_xml(result)
+      result = ExGeo.Xml.services_to_xml(result)
       xml(conn, result)
     end)
   end
 
   defp process_get_services(conn, on_success_fn) do
-    services = ExOpen311.Server.get_services()
+    services = ExGeo.Server.get_services()
     data = Enum.map(services, fn service ->
       info = service["value"]
       %{
@@ -70,7 +70,7 @@ defmodule ExOpen311.API do
   end
   post "requests.xml" do
     process_requests(conn, params, fn data ->
-      result = ExOpen311.Xml.service_requests_to_xml(data)
+      result = ExGeo.Xml.service_requests_to_xml(data)
       xml(conn, result)
     end)
   end
@@ -87,7 +87,7 @@ defmodule ExOpen311.API do
       are required if no address_string or address_id is provided.
       """)
     else
-      result = ExOpen311.Server.create_service_request(params)
+      result = ExGeo.Server.create_service_request(params)
       data = [
 	      %{
 	        service_request_id: result["_id"],

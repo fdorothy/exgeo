@@ -1,10 +1,10 @@
-defmodule ExOpen311.ApiTest do
+defmodule ExGeo.ApiTest do
   use ExUnit.Case, async: false
-  use Maru.Test, for: ExOpen311.API
-  alias ExOpen311.Server
+  use Maru.Test, for: ExGeo.API
+  alias ExGeo.Server
 
   setup do
-    ExOpen311.Server.recreate
+    ExGeo.Server.recreate
     :ok
   end
 

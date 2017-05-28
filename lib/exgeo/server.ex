@@ -1,13 +1,13 @@
-defmodule ExOpen311.Server do
+defmodule ExGeo.Server do
   @doc ~S"""
-  Recreates the entire ExOpen311 couchdb database. This is dangerous!
+  Recreates the entire ExGeo couchdb database. This is dangerous!
   """
   def recreate do
-    config = Application.get_env(:ex_open311, :couchdb)
+    config = config()
     server = Couchex.server_connection(config[:server])
-    Couchex.delete_db(ExOpen311.Server.services())
+    Couchex.delete_db(ExGeo.Server.services())
     Couchex.create_db(server, config[:services_db])
-    Couchex.delete_db(ExOpen311.Server.service_requests())
+    Couchex.delete_db(ExGeo.Server.service_requests())
     Couchex.create_db(server, config[:service_requests_db])
 
     # views: services.data
@@ -27,7 +27,7 @@ defmodule ExOpen311.Server do
         }
       }
     }
-    Couchex.save_doc(ExOpen311.Server.services(), doc)
+    Couchex.save_doc(ExGeo.Server.services(), doc)
 
     # initialize with a default service
     doc = %{
@@ -43,7 +43,7 @@ defmodule ExOpen311.Server do
         expected_work_time: ""
       }
     }
-    Couchex.save_doc(ExOpen311.Server.services(), doc)
+    Couchex.save_doc(ExGeo.Server.services(), doc)
   end
 
   @doc ~S"""
@@ -56,7 +56,7 @@ defmodule ExOpen311.Server do
   ###  SERVICES  ###
 
   @doc ~S"""
-  Gets a connection to the open311_services couchdb database
+  Gets a connection to the exgeo_services couchdb database
   """
   def services() do
     {:ok, db} = Couchex.open_db(server(), config()[:services_db])
@@ -97,7 +97,7 @@ defmodule ExOpen311.Server do
   ###  SERVICE REQUESTS ###
 
   @doc ~S"""
-  Gets a connection to the open311_service_requests couchdb database
+  Gets a connection to the exgeo_service_requests couchdb database
   """
   def service_requests() do
     {:ok, db} = Couchex.open_db(server(), config()[:service_requests_db])
@@ -180,7 +180,7 @@ defmodule ExOpen311.Server do
   defp map_response(response), do: response
 
   defp config do
-    Application.get_env(:ex_open311, :couchdb)
+    Application.get_env(:exgeo, :couchdb)
   end
 
   @doc ~S"""
