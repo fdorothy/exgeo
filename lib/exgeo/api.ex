@@ -19,7 +19,7 @@ defmodule ExGeo.API do
     end)
   end
 
-  defp process_get_services(conn, on_success_fn) do
+  defp process_get_services(_conn, on_success_fn) do
     services = ExGeo.Server.get_services()
     data = Enum.map(services, fn service ->
       info = service["value"]
@@ -33,7 +33,7 @@ defmodule ExGeo.API do
         group: Map.get(info, "group", "unknown group")
       }
     end)
-    on_success_fn.(Enum.map(services, fn service -> Map.fetch!(service, "value") end))
+    on_success_fn.(data)
   end
 
   ## POST /requests.[json|xml] routes
