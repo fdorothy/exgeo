@@ -40,7 +40,7 @@ defmodule ExGeo.API do
 
   # parameters for the /requests.* routes
   helpers do
-    params :requests_params do
+    params :post_requests_params do
       requires :service_code, type: String
       optional :attribute, type: Attributes
       optional :lat, type: String
@@ -59,14 +59,14 @@ defmodule ExGeo.API do
   end
 
   params do
-    use :requests_params
+    use :post_requests_params
   end
   post "requests.json" do
     process_requests(conn, params, &json(conn, &1))
   end
 
   params do
-    use :requests_params
+    use :post_requests_params
   end
   post "requests.xml" do
     process_requests(conn, params, fn data ->
@@ -97,6 +97,61 @@ defmodule ExGeo.API do
       ]
       on_success_fn.(data)
     end
+  end
+
+  ## GET /requests.[json|xml] routes
+  helpers do
+    params :get_requests_params do
+      optional :service_request_id, type: String
+      optional :service_code, type: String
+      optional :start_date, type: String
+      optional :end_date, type: String
+      optional :status, type: String
+    end
+  end
+
+  params do
+    use :get_requests_params
+  end
+  get "requests.json" do
+    process_get_requests(conn, params, &json(conn, &1))
+  end
+
+  params do
+    use :get_requests_params
+  end
+  get "requests.xml" do
+    process_get_requests(conn, params, fn result ->
+      result = ExGeo.Xml.service_requests_to_xml(result)
+      xml(conn, result)
+    end)
+  end
+
+  defp process_get_requests(_conn, params, on_success_fn) do
+    requests = ExGeo.Server.find_service_requests(params)
+    data = Enum.map(requests, fn request ->
+      info = request
+      %{
+        service_request_id: Map.get(info, "service_request_id", ""),
+        status: Map.get(info, "status", ""),
+        status_note: Map.get(info, "status_note", ""),
+        service_name: Map.get(info, "service_name", ""),
+        service_code: Map.get(info, "service_code", ""),
+        description: Map.get(info, "description", ""),
+        agency_responsible: Map.get(info, "agency_responsible", ""),
+        service_notice: Map.get(info, "service_notice", ""),
+        requested_datetime: Map.get(info, "requested_datetime", ""),
+        updated_datetime: Map.get(info, "updated_datetime", ""),
+        expected_datetime: Map.get(info, "expected_datetime", ""),
+        address: Map.get(info, "address", ""),
+        address_id: Map.get(info, "address_id", ""),
+        zipcode: Map.get(info, "zipcode", ""),
+        lat: Map.get(info, "lat", ""),
+        long: Map.get(info, "long", ""),
+        media_url: Map.get(info, "media_url", ""),
+      }
+    end)
+    on_success_fn.(data)
   end
 
   defp xml(conn, data) do

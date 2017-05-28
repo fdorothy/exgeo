@@ -128,38 +128,38 @@ defmodule ExGeo.ServerTest do
     assert result["_id"] == r3["_id"]
 
     # find by service code(s)
-    [result] = ExGeo.Server.find_service_requests(service_code: "001").docs
+    [result] = ExGeo.Server.find_service_requests(service_code: "001")
     assert result["_id"] == r1["_id"]
-    [result] = ExGeo.Server.find_service_requests(service_code: "002").docs
+    [result] = ExGeo.Server.find_service_requests(service_code: "002")
     assert result["_id"] == r2["_id"]
-    [sr1, sr2] = ExGeo.Server.find_service_requests(service_code: "002, 001").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(service_code: "002, 001")
     ids = [sr1["_id"], sr2["_id"]]
     assert r1["_id"] in ids
     assert r2["_id"] in ids
 
     # find by status
-    [sr1, sr2] = ExGeo.Server.find_service_requests(status: "open, wip").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(status: "open, wip")
     ids = [sr1["_id"], sr2["_id"]]
     assert r1["_id"] in ids
     assert r3["_id"] in ids
 
     # find after start time
-    [sr1] = ExGeo.Server.find_service_requests(start_date: "2017-02-01T00:00:00Z").docs
+    [sr1] = ExGeo.Server.find_service_requests(start_date: "2017-02-01T00:00:00Z")
     assert sr1["_id"] == r2["_id"]
-    [sr1, sr2] = ExGeo.Server.find_service_requests(start_date: "2017-01-01T00:00:00Z").docs
+    [sr1, sr2] = ExGeo.Server.find_service_requests(start_date: "2017-01-01T00:00:00Z")
     ids = [sr1["_id"], sr2["_id"]]
     assert r2["_id"] in ids
     assert r1["_id"] in ids
 
     # find before end time
-    [sr1] = ExGeo.Server.find_service_requests(end_date: "2017-01-01T00:00:00Z").docs
+    [sr1] = ExGeo.Server.find_service_requests(end_date: "2017-01-01T00:00:00Z")
     assert sr1["_id"] == r3["_id"]
 
     # find in time range
     [sr1] = ExGeo.Server.find_service_requests(%{
       start_date: "2017-01-01T00:00:00Z",
       end_date: "2017-01-30T00:00:00Z"
-    }).docs
+    })
     assert sr1["_id"] == r1["_id"]
   end
 

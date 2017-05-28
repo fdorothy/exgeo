@@ -169,7 +169,7 @@ defmodule ExGeo.Server do
           end
 
         selector = Enum.into(selector, %{})
-        Couchex.find(service_requests(), %{"selector" => selector})
+        Couchex.find(service_requests(), %{"selector" => selector}).docs
       id ->
         [Couchex.open_doc(service_requests(), %{id: id})]
     end
