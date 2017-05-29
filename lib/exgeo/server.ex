@@ -7,6 +7,8 @@ defmodule ExGeo.Server do
     server = Couchex.server_connection(config[:server])
     Couchex.delete_db(ExGeo.Server.services())
     Couchex.create_db(server, config[:services_db])
+    Couchex.delete_db(ExGeo.Server.service_definitions())
+    Couchex.create_db(server, config[:service_definitions_db])
     Couchex.delete_db(ExGeo.Server.service_requests())
     Couchex.create_db(server, config[:service_requests_db])
 
@@ -92,6 +94,23 @@ defmodule ExGeo.Server do
   def get_service(service_code) do
     result = Couchex.open_doc(services(), %{id: service_code})
     map_response(result)
+  end
+
+  ###  SERVICE DEFINITIONS  ###
+
+  def service_definitions() do
+    {:ok, db} = Couchex.open_db(server(), config()[:service_definitions_db])
+    db
+  end
+
+  def create_service_definition(data) when is_map(data) do
+    db = service_definitions()
+    {:ok, result} = Couchex.save_doc(db, data)
+    map_response(result)
+  end
+
+  def get_service_definitions(service_code) do
+    Couchex.find(service_definitions(), %{"selector" => %{"service_code" => service_code}}).docs
   end
 
   ###  SERVICE REQUESTS ###

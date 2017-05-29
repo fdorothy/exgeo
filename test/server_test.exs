@@ -53,6 +53,15 @@ defmodule ExGeo.ServerTest do
     assert service["_id"] == "001"
   end
 
+  test "get service definitions" do
+    Enum.map(~w(100 100 101 102), fn x ->
+      Server.create_service_definition(%{service_code: x})
+    end)
+    assert length(Server.get_service_definitions("100")) == 2
+    assert length(Server.get_service_definitions("101")) == 1
+    assert length(Server.get_service_definitions("102")) == 1
+  end
+
   test "create a service request by latitude / longitude" do
     result = Server.create_service_request(@lat_long_service_request)
     assert Map.has_key?(result, "_id")
