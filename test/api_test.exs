@@ -185,6 +185,49 @@ defmodule ExGeo.ApiTest do
     assert ids == [r1["_id"]]
   end
 
+  test "resource parameter" do
+    assert %{resource: "123abc", format: "xml"} = Maru.Types.Resource.parse("123abc.xml", [])
+    assert %{resource: "123abc", format: "json"} = Maru.Types.Resource.parse("123abc.json", [])
+    assert %{resource: "b3fa3vaweAAz", format: "xml"} = Maru.Types.Resource.parse("b3fa3vaweAAz.xml", [])
+    assert_raise Maru.Exceptions.InvalidFormat, fn -> Maru.Types.Resource.parse("123abc", []) end
+    assert_raise Maru.Exceptions.InvalidFormat, fn -> Maru.Types.Resource.parse("123abc.xmll", []) end
+    assert_raise Maru.Exceptions.InvalidFormat, fn -> Maru.Types.Resource.parse("_123abc.xml", []) end
+  end
+
+  test "get a service request by id" do
+    # seed some services
+    Server.create_service("001", "Cans left out", "Garbage or recyling cans left out", "street")
+    Server.create_service("002", "Noise complaint", "Noises after 10pm", "police")
+    Server.create_service("003", "Road damage", "Potholes, trees down", "street")
+
+    # seed some requests
+    request = %{
+      service_code: "001",
+      address_id: "123456",
+      description: "A large sinkhole is destroying the street",
+      requested_datetime: "2017-01-05T00:00:00Z"
+    }
+    _r1 = Server.create_service_request(request)
+    request = %{
+      service_code: "002",
+      address_id: "123456",
+      description: "Loud noise in apartments next door",
+      status: "closed",
+      requested_datetime: "2017-02-06T00:00:00Z"
+    }
+    r2 = Server.create_service_request(request)
+
+    path = "/requests/#{r2.service_request_id}.xml"
+    result = request(:get, path)
+    doc = Exml.parse(result.resp_body)
+    assert Exml.get(doc, "//service_requests//request[1]//service_request_id") == r2.service_request_id
+
+    result = request(:get, "/requests/#{r2.service_request_id}.json")
+    assert result.status == 200
+    [result] = json_response(result)
+    assert result["service_request_id"] == r2.service_request_id
+  end
+
   def conn do
     Maru.Test.build_conn
   end

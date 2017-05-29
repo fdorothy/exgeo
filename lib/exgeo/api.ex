@@ -100,6 +100,7 @@ defmodule ExGeo.API do
   end
 
   ## GET /requests.[json|xml] routes
+
   helpers do
     params :get_requests_params do
       optional :service_request_id, type: String
@@ -152,6 +153,24 @@ defmodule ExGeo.API do
       }
     end)
     on_success_fn.(data)
+  end
+
+  ## GET /requests/[service_request_id].[json|xml]
+
+  params do
+    requires :service_request, type: Resource
+  end
+  get "/requests/:service_request" do
+    query_params = %{service_request_id: params.service_request.resource}
+    process_get_requests(conn, query_params, fn result ->
+      case params.service_request.format do
+	"xml" ->
+	  result = ExGeo.Xml.service_requests_to_xml(result)
+	  xml(conn, result)
+	"json" ->
+	  json(conn, result)
+      end
+    end)
   end
 
   defp xml(conn, data) do
