@@ -55,7 +55,7 @@ defmodule ExGeo.ServerTest do
 
   test "get service definitions" do
     Enum.map(~w(100 100 101 102), fn x ->
-      Server.create_service_definition(%{service_code: x})
+      Server.create_service_definition(%{data: %{service_code: x}})
     end)
     assert length(Server.get_service_definitions("100")) == 2
     assert length(Server.get_service_definitions("101")) == 1
