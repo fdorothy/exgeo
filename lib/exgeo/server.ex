@@ -110,7 +110,7 @@ defmodule ExGeo.Server do
   end
 
   def get_service_definitions(service_code) do
-    Couchex.find(service_definitions(), %{"selector" => %{"service_code" => service_code}}).docs
+    Couchex.find(service_definitions(), %{"selector" => %{"data.service_code" => service_code}}).docs
   end
 
   ###  SERVICE REQUESTS ###

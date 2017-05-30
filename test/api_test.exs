@@ -60,6 +60,43 @@ defmodule ExGeo.ApiTest do
     assert s2["group"] == "police"
   end
 
+  test "GET /service_definitions.json" do
+    data = %{
+      data: %{
+	service_code: "DMV66",
+	attribute: %{
+	  variable: true,
+	  code: "WHISHETN",
+	  datatype: "singlevaluelist",
+	  required: true,
+	  datatype_description: "",
+	  order: 1,
+	  description: "What is the ticket/tag/DL number?",
+	  values: [
+	    %{
+	      key: "123",
+	      name: "Ford"
+	    },
+	    %{
+	      key: "124",
+	      name: "Chrysler"
+	    }
+	  ]
+	}
+      }
+    }
+    Server.create_service_definition(data)
+
+    result = request(:get, "/services/DMV66.json")
+    data = json_response(result)
+    assert data["service_code"] == "DMV66"
+    assert length(data["attributes"]) == 1
+
+    result = request(:get, "/services/DMV66.xml")
+    doc = Exml.parse(result.resp_body)
+    assert Exml.get(doc, "//service_code[1]") == "DMV66"
+  end
+
   test "POST /requests using address_string" do
     request = %{
       jurisdiction_id: "city.gov",

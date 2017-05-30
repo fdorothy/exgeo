@@ -36,6 +36,29 @@ defmodule ExGeo.API do
     on_success_fn.(data)
   end
 
+  ## GET /services/[service_code].[format]
+
+  params do
+    requires :service_code, type: Resource
+  end
+  get "services/:service_code" do
+    service_code = params.service_code.resource
+    service_definitions = ExGeo.Server.get_service_definitions(service_code)
+    attributes = Enum.map(service_definitions, fn info ->
+      data = info["data"]
+      attrib = Map.take(data["attribute"], ~w(variable code datatype required datatype_description order description))
+      values = Enum.map(data["attribute"]["values"], &Map.take(&1, ~w(key name)))
+      Map.merge(attrib, %{"values" => values})
+    end)
+    case params.service_code.format do
+      "xml" ->
+	result = ExGeo.Xml.service_definitions_to_xml(service_code, attributes)
+	xml(conn, result)
+      "json" ->
+	json(conn, %{service_code: service_code, attributes: attributes})
+    end
+  end
+
   ## POST /requests.[json|xml] routes
 
   # parameters for the /requests.* routes
